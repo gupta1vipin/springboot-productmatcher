@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Implementation-Title: Product Matcher API
+Implementation-Version: 0.0.1-SNAPSHOT
+Built-By: admin
+Implementation-Vendor-Id: com.test.productsmatcher
+Build-Jdk: 1.8.0_191
+Implementation-URL: http://projects.spring.io/spring-boot/products-mat
+ cher/
+Created-By: Maven Integration for Eclipse
+Implementation-Vendor: Pivotal Software, Inc.
+
