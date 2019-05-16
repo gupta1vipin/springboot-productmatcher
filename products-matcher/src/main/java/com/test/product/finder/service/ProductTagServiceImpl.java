@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -15,12 +16,14 @@ import com.test.product.finder.masterdata.MasterDataManagementUtil;
 
 @Component
 public class ProductTagServiceImpl implements ProductTagService {
+	
+	// TODO (either add logging here or implement as AOP )
+	private static final Logger LOG = Logger.getLogger(ProductTagServiceImpl.class);
 
 	String[] masterTagArray = MasterDataManagementUtil.getProductTagsArray();
 
 	@Override
 	public ProductsDTO fetchMatchingTagVectorsForProducts(final ProductsDTO prodListObj) {
-
 		if (null != prodListObj && !CollectionUtils.isEmpty(prodListObj.getProducts())) {
 			prodListObj.getProducts().parallelStream().forEach(product -> this.updateTagVectorForProduct(product));
 		}

@@ -2,8 +2,8 @@ package com.test.product.finder.controllers;
 
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,6 +15,9 @@ import com.test.product.finder.service.ProductTagService;
 
 @RestController
 public class ProductTagController {
+	
+	// TODO (either add logging here or implement as AOP )
+	private static final Logger LOG = Logger.getLogger(ProductTagController.class);
 
 	@Autowired
 	ProductTagService productFinderService;
