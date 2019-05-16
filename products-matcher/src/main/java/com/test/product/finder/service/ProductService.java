@@ -1,5 +1,6 @@
 package com.test.product.finder.service;
 
+import java.util.List;
 import java.util.Map;
 
 import com.test.product.finder.dto.ProductDTO;
@@ -9,7 +10,7 @@ import com.test.product.finder.dto.ProductsDTO;
  * The Interface ProductFinderService declares function definitions for Product
  * Tag Vector and related business requirements.
  */
-public interface ProductTagService {
+public interface ProductService {
 
 	/**
 	 * Fetch matching tag vectors for products. This function creates a vector of
@@ -28,14 +29,23 @@ public interface ProductTagService {
 	 * @param product the product
 	 */
 	void updateTagVectorForProduct(ProductDTO product);
-	
-	
+
 	/**
-	 * Fetch matching tag vectors map for products. It creates a Map<Product Id, Product DTO>.
+	 * Fetch matching tag vectors map for products. It creates a Map<Product Id,
+	 * Product DTO>.
 	 *
 	 * @param prodListObj the prod list obj
 	 * @return the map
 	 */
 	Map<Integer, ProductDTO> fetchMatchingTagVectorsMapForProductsMap(final ProductsDTO prodListObj);
+
+	/**
+	 * Find similar products by vector match.
+	 *
+	 * @param id          the id of product
+	 * @param productsMap the products map
+	 * @return the list
+	 */
+	List<ProductDTO> findSimilarProductsByVectorMatch(final Integer id, final Map<Integer, ProductDTO> productsMap);
 
 }

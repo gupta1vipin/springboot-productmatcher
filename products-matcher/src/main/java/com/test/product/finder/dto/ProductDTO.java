@@ -6,9 +6,14 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 /**
  * The Class Product.
  */
+@JsonInclude(Include.NON_EMPTY)
 public class ProductDTO {
 
 	/** The name : product name */
@@ -25,6 +30,17 @@ public class ProductDTO {
 	private String[] tags;
 
 	private int[] tagVector;
+	
+	//@JsonIgnore
+	private double similarityIndex;
+
+	public double getSimilarityIndex() {
+		return similarityIndex;
+	}
+
+	public void setSimilarityIndex(double similarityIndex) {
+		this.similarityIndex = similarityIndex;
+	}
 
 	public int[] getTagVector() {
 		return tagVector;

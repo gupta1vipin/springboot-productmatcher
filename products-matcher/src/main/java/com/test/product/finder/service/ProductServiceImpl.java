@@ -1,7 +1,10 @@
 package com.test.product.finder.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -13,12 +16,15 @@ import org.springframework.util.CollectionUtils;
 import com.test.product.finder.dto.ProductDTO;
 import com.test.product.finder.dto.ProductsDTO;
 import com.test.product.finder.masterdata.MasterDataManagementUtil;
+import com.test.product.finder.util.ProductUtils;
 
 @Component
-public class ProductTagServiceImpl implements ProductTagService {
+public class ProductServiceImpl implements ProductService {
 	
+	private static final int MAX_SIMILAR_PRODUCTS = 3;
+
 	// TODO (either add logging here or implement as AOP )
-	private static final Logger LOG = Logger.getLogger(ProductTagServiceImpl.class);
+	private static final Logger LOG = Logger.getLogger(ProductServiceImpl.class);
 
 	String[] masterTagArray = MasterDataManagementUtil.getProductTagsArray();
 
@@ -50,6 +56,25 @@ public class ProductTagServiceImpl implements ProductTagService {
 			tagVectorArray[i] = Arrays.asList(product.getTags()).contains(masterTagArray[i]) ? 1 : 0;
 		}
 		product.setTagVector(tagVectorArray);
+	}
+	
+	@Override
+	public List<ProductDTO> findSimilarProductsByVectorMatch(final Integer id,
+			final Map<Integer, ProductDTO> productsMap) {
+		List<ProductDTO> listProduct = new ArrayList<ProductDTO>();
+		if (null != productsMap && productsMap.containsKey(id)) {
+			final ProductDTO referenceProduct = productsMap.get(id); // find the product for id provided as path
+																		// variable
+			productsMap.remove(id); // remove the product for the id so that it doesn't compare with itself
+			productsMap.values().forEach(product -> product
+					.setSimilarityIndex(ProductUtils.calculateSimilarityBetweenTwoProducts(referenceProduct, product))); // iterate to calculate the similarityIndex
+			
+			//sort items by similarity index in reversed order (highest first)
+			Comparator<ProductDTO> comparator = Comparator.comparing(ProductDTO::getSimilarityIndex).reversed(); 
+			listProduct = productsMap.values().stream()
+					.sorted(comparator).limit(MAX_SIMILAR_PRODUCTS).collect(Collectors.toList());
+		}
+		return listProduct;
 	}
 
 }
