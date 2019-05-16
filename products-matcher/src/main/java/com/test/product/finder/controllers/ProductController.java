@@ -26,18 +26,26 @@ public class ProductController {
 	
 
 	/**
-	 * Fetch tag vectors for products.
+	 * Fetch tag vectors for products. This function returns the list of the product data with related tag vector.
+	 * This has be Deprecated and it is recommenced to use fetchMatchingTagVectorsMapForProductsMap function which
+	 * returns the same Product data objects as map with Map Key as Product Id.
 	 *
 	 * @param prodListObj the prod list obj
 	 * @return the products DTO
 	 */
 	@RequestMapping(value = "/fetch-matching-tagvectors", method = { RequestMethod.POST })
-	public ProductsDTO fetchTagVectorsForProducts(@RequestBody final ProductsDTO prodListObj) {
+	@Deprecated public ProductsDTO fetchTagVectorsForProducts(@RequestBody final ProductsDTO prodListObj) {
 
 		return productService.fetchMatchingTagVectorsForProducts(prodListObj);
 	}
 	
 	
+	/**
+	 * Fetch matching tag vectors map for products. It returns an JSON response of key/value as productId/Product.
+	 *
+	 * @param prodListObj the prod list obj
+	 * @return the map
+	 */
 	@RequestMapping(value = "/fetch-matching-tagvectors-map", method = { RequestMethod.POST })
 	public Map<Integer, ProductDTO> fetchMatchingTagVectorsMapForProductsMap(@RequestBody final ProductsDTO prodListObj) {
 
