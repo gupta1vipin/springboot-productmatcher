@@ -31,7 +31,7 @@ public class ProductDTO {
 
 	private int[] tagVector;
 	
-	//@JsonIgnore
+	@JsonIgnore
 	private double similarityIndex;
 
 	public double getSimilarityIndex() {
