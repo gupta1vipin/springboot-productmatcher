@@ -3,7 +3,8 @@ package com.test.product.finder.controllers;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +20,7 @@ import com.test.product.finder.service.ProductService;
 public class ProductController {
 	
 	// TODO (either add logging here or implement as AOP )
-	private static final Logger LOG = Logger.getLogger(ProductController.class);
+	private static final Logger LOG = LogManager.getLogger();
 
 	@Autowired
 	ProductService productService;
@@ -49,7 +50,7 @@ public class ProductController {
 	@RequestMapping(value = "/fetch-matching-tagvectors-map", method = { RequestMethod.POST })
 	public Map<Integer, ProductDTO> fetchMatchingTagVectorsMapForProductsMap(@RequestBody final ProductsDTO prodListObj) {
 
-		return productService.fetchMatchingTagVectorsMapForProductsMap(prodListObj);
+		return productService.updateTagVectorsForProducts(prodListObj);
 	}
 	
 	
@@ -58,7 +59,7 @@ public class ProductController {
 	 * id product from provided data.
 	 *
 	 * @param id          the id
-	 * @param prodListObj the prod list obj
+	 * @param productsDTO the prod list obj
 	 * @return the products DTO
 	 */
 	@RequestMapping(value = "/fetch-similar-products/{id}", method = { RequestMethod.POST })

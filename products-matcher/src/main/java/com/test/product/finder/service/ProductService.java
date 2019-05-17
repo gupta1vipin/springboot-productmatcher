@@ -37,7 +37,7 @@ public interface ProductService {
 	 * @param prodListObj the prod list obj
 	 * @return the map
 	 */
-	Map<Integer, ProductDTO> fetchMatchingTagVectorsMapForProductsMap(final ProductsDTO prodListObj);
+	Map<Integer, ProductDTO> updateTagVectorsForProducts(final ProductsDTO prodListObj);
 
 	/**
 	 * Find similar products by vector match.

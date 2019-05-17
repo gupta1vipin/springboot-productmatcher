@@ -9,7 +9,8 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -20,15 +21,16 @@ import com.test.product.finder.util.ProductUtils;
 
 @Component
 public class ProductServiceImpl implements ProductService {
-	
-	private static final int MAX_SIMILAR_PRODUCTS = 3;
+
+	public static final int MAX_SIMILAR_PRODUCTS = 3;
 
 	// TODO (either add logging here or implement as AOP )
-	private static final Logger LOG = Logger.getLogger(ProductServiceImpl.class);
+	private static final Logger LOG = LogManager.getLogger();
 
 	String[] masterTagArray = MasterDataManagementUtil.getProductTagsArray();
 
 	@Override
+	@Deprecated
 	public ProductsDTO fetchMatchingTagVectorsForProducts(final ProductsDTO prodListObj) {
 		if (null != prodListObj && !CollectionUtils.isEmpty(prodListObj.getProducts())) {
 			prodListObj.getProducts().parallelStream().forEach(product -> this.updateTagVectorForProduct(product));
@@ -36,28 +38,29 @@ public class ProductServiceImpl implements ProductService {
 		return prodListObj;
 	}
 
-	
 	@Override
-	public Map<Integer, ProductDTO> fetchMatchingTagVectorsMapForProductsMap(ProductsDTO prodListObj) {
-		
+	public Map<Integer, ProductDTO> updateTagVectorsForProducts(ProductsDTO productsDto) {
+
 		Map<Integer, ProductDTO> productsMap = new HashMap<Integer, ProductDTO>();
-		productsMap = prodListObj.getProducts().stream().collect( Collectors.toMap(ProductDTO::getId,
-                Function.identity()) );
-		productsMap.values().forEach(product -> this.updateTagVectorForProduct(product));
+		if (null != productsDto && !CollectionUtils.isEmpty(productsDto.getProducts())) {
+			productsMap = productsDto.getProducts().stream()
+					.collect(Collectors.toMap(ProductDTO::getId, Function.identity()));
+			productsMap.values().forEach(product -> this.updateTagVectorForProduct(product));
+		}
 		return productsMap;
 	}
-	
 
 	@Override
 	public void updateTagVectorForProduct(ProductDTO product) {
-
-		int[] tagVectorArray = new int[masterTagArray.length];
-		for (int i = 0; i < masterTagArray.length; i++) {
-			tagVectorArray[i] = Arrays.asList(product.getTags()).contains(masterTagArray[i]) ? 1 : 0;
+		if (null != product && null != product.getTags()) {
+			int[] tagVectorArray = new int[masterTagArray.length];
+			for (int i = 0; i < masterTagArray.length; i++) {
+				tagVectorArray[i] = Arrays.asList(product.getTags()).contains(masterTagArray[i]) ? 1 : 0;
+			}
+			product.setTagVector(tagVectorArray);
 		}
-		product.setTagVector(tagVectorArray);
 	}
-	
+
 	@Override
 	public List<ProductDTO> findSimilarProductsByVectorMatch(final Integer id,
 			final Map<Integer, ProductDTO> productsMap) {
@@ -67,12 +70,16 @@ public class ProductServiceImpl implements ProductService {
 																		// variable
 			productsMap.remove(id); // remove the product for the id so that it doesn't compare with itself
 			productsMap.values().forEach(product -> product
-					.setSimilarityIndex(ProductUtils.calculateSimilarityBetweenTwoProducts(referenceProduct, product))); // iterate to calculate the similarityIndex
-			
-			//sort items by similarity index in reversed order (highest first)
-			Comparator<ProductDTO> comparator = Comparator.comparing(ProductDTO::getSimilarityIndex).reversed(); 
-			listProduct = productsMap.values().stream()
-					.sorted(comparator).limit(MAX_SIMILAR_PRODUCTS).collect(Collectors.toList());
+					.setSimilarityIndex(ProductUtils.calculateSimilarityBetweenTwoProducts(referenceProduct, product))); // iterate
+																															// to
+																															// calculate
+																															// the
+																															// similarityIndex
+
+			// sort items by similarity index in reversed order (highest first)
+			Comparator<ProductDTO> comparator = Comparator.comparing(ProductDTO::getSimilarityIndex).reversed();
+			listProduct = productsMap.values().stream().sorted(comparator).limit(MAX_SIMILAR_PRODUCTS)
+					.collect(Collectors.toList());
 		}
 		return listProduct;
 	}

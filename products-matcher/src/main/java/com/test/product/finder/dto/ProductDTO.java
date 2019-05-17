@@ -1,5 +1,7 @@
 package com.test.product.finder.dto;
 
+import java.util.Arrays;
+
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
@@ -72,6 +74,12 @@ public class ProductDTO {
 
 	public void setTags(String[] tags) {
 		this.tags = tags;
+	}
+	
+	@Override
+	public String toString() {
+		return "ProductDTO [name=" + name + ", id=" + id + ", tags=" + Arrays.toString(tags) + ", tagVector="
+				+ Arrays.toString(tagVector) + ", similarityIndex=" + similarityIndex + "]";
 	}
 
 }
